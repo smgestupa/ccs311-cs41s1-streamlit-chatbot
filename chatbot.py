@@ -2,7 +2,7 @@
 """# Import Necessary Libraries
 
 import time
-import pandas
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 topics_responses = '/content/NLP-Chatbot-Data.csv'
 
-chatdata_df = pandas.read_csv(topics_responses)
+chatdata_df = pd.read_csv(topics_responses)
 chatdata_df.head()
 
 topics_indices = []

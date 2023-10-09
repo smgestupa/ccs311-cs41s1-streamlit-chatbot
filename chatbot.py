@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 """# Initialize the Data"""
 
-topics_responses = '/content/NLP-Chatbot-Data.csv'
+topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
 
 chatdata_df = pd.read_csv(topics_responses)
 chatdata_df.head()

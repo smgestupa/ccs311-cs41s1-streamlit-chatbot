@@ -34,7 +34,7 @@ for index in range(0, len(chatdata_df.columns) - 2, 2):
   new_topics.extend(chatdata_df.iloc[:, index + 2].values.tolist())
   new_responses.extend(chatdata_df.iloc[:, index + 3].values.tolist())
 
-new_df = DataFrame({'Topics': new_topics, 'Responses': new_responses})
+new_df = pd.DataFrame({'Topics': new_topics, 'Responses': new_responses})
 
 # Merge the topics and responses dataframe into one column
 chatdata_df = chatdata_df.merge(new_df, how='outer')

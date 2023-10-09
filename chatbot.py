@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """# Import Necessary Libraries
 
-# Commented out IPython magic to ensure Python compatibility.
-# %pip install pandas
-# %pip install sklearn
-
 import time
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer

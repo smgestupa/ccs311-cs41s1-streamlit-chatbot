@@ -2,7 +2,7 @@
 """# Import Necessary Libraries
 
 import time
-import pandas as pd
+import pandas
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 topics_responses = '/content/NLP-Chatbot-Data.csv'
 
-chatdata_df = pd.read_csv(topics_responses)
+chatdata_df = pandas.read_csv(topics_responses)
 chatdata_df.head()
 
 topics_indices = []
@@ -34,7 +34,7 @@ for index in range(0, len(chatdata_df.columns) - 2, 2):
   new_topics.extend(chatdata_df.iloc[:, index + 2].values.tolist())
   new_responses.extend(chatdata_df.iloc[:, index + 3].values.tolist())
 
-new_df = pd.DataFrame({'Topics': new_topics, 'Responses': new_responses})
+new_df = DataFrame({'Topics': new_topics, 'Responses': new_responses})
 
 # Merge the topics and responses dataframe into one column
 chatdata_df = chatdata_df.merge(new_df, how='outer')

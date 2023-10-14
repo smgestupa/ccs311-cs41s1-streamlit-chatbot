@@ -40,18 +40,8 @@ def get_most_similar_response(df, query, top_k=1, index=0):
     # Pick the Top k response
     sorted_indeces = similarity_scores.argsort()[0][::-1][:top_k]
 
-    # If the similarity score is less than 60%
+    # Get the similarity score of the chosen response
     similarity_score = similarity_scores[0][similarity_scores.argsort()[0][::-1][:top_k]][0] * 100
-
-    if similarity_score < 60.0:
-        unknown_message = [
-            'I don\'t understand your message, please try again.',
-            'I need more information about what you want to know. Keep going!',
-            'Hmmm... I may have limited information about your message, I am sorry.',
-            'I don\'t know what you want to say. Apologies.'
-        ]
-
-        return random.choice(unknown_message)
 
     # Fetch the corresponding response
     most_similar_responses = df.iloc[sorted_indeces]['Responses'].values
@@ -59,10 +49,23 @@ def get_most_similar_response(df, query, top_k=1, index=0):
     response = None if len(most_similar_responses) == 0 else most_similar_responses[index]
     response_index = df[df['Responses'] == response].index.item()
 
-    return response
+    return response, similarity_score
 
 def suggest_topic(df, query):
-    write_bot_message(f'Did you know? {get_most_similar_response(df, query, top_k=20, index=random.randint(2, 19))}')
+    response, similarity_score = get_most_similar_response(df, query, top_k=20, index=random.randint(2, 19))
+
+    if similarity_score >= 50.0:
+        write_bot_message(f'Did you know? {response}')
+
+def get_unknown_message():
+    unknown_message = [
+            'I don\'t understand your message, please try again.',
+            'I need more information about what you want to know. Keep going!',
+            'Hmmm... I may have limited information about your message, I am sorry.',
+            'I don\'t know what you want to say. Apologies.'
+        ]
+
+    return random.choice(unknown_message)
 
 topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
 
@@ -87,7 +90,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if len(st.session_state.messages) == 0:
-    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")})
+    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
 
 for message in st.session_state.messages:
     with st.chat_message(message['role']):
@@ -105,6 +108,11 @@ if prompt is not None:
 
     st.session_state.messages.append({'role': 'user', 'content': prompt})
 
-    write_bot_message(get_most_similar_response(chatdata_df, prompt))
+    response, similarity_score = get_most_similar_response(chatdata_df, prompt)
+
+    if similarity_score >= 50.0:
+        write_bot_message(response)
+    else:
+        write_bot_message(get_unknown_message())
 
 async_loop.run_forever()

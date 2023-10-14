@@ -1,4 +1,5 @@
 import time
+import random
 import asyncio
 import streamlit as st
 import pandas as pd
@@ -45,7 +46,10 @@ def get_most_similar_response(df, query, top_k=1, index=0):
     response = None if len(most_similar_responses) == 0 else most_similar_responses[index]
     response_index = df[df['Responses'] == response].index.item()
 
-    write_bot_message(response)
+    return response
+
+def suggest_topic(df, query):
+    write_bot_message(f'Did you know? {get_most_similar_response(df, query, top_k=20, index=random.randint(2, 19))}')
 
 topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
 
@@ -55,9 +59,10 @@ chatdata_df = pd.read_csv(topics_responses)
 
 last_query = ''
 
-async def suggest_topic(__seconds: float, func, *args, **kwargs):
-    await asyncio.sleep(__seconds)
-    func(*args, **kwargs)
+async def every(__seconds: float, func, *args, **kwargs):
+    while True:
+        await asyncio.sleep(__seconds)
+        func(*args, **kwargs)
 
 async_loop = asyncio.new_event_loop()
 
@@ -70,15 +75,23 @@ for message in st.session_state.messages:
 
 prompt = st.chat_input('Ask away!')
 
+suggest_topic_loop = None
+
+write_bot_message(get_most_similar_response(chatdata_df, "Help."))
+
 if prompt is not None:
     last_query = prompt
 
     with st.chat_message('user'):
         st.markdown(prompt)
+    
+    if suggest_topic_loop != None:
+        suggest_topic_loop.cancel()
+
+    suggest_topic_loop = async_loop.create_task(every(15, suggest_topic, chatdata_df, last_query))
 
     st.session_state.messages.append({'role': 'user', 'content': prompt})
 
-    get_most_similar_response(chatdata_df, prompt)
-    async_loop.create_task(suggest_topic(15, get_most_similar_response, chatdata_df, last_query, top_k=2, index=-1))
+    write_bot_message(get_most_similar_response(chatdata_df, prompt))
 
 async_loop.run_forever()

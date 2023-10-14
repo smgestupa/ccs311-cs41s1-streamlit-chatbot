@@ -41,7 +41,7 @@ def get_most_similar_response(df, query, top_k=1, index=0):
     sorted_indeces = similarity_scores.argsort()[0][::-1][:top_k]
 
     # If the similarity score is less than 60%
-    similarity_score = similarity_scores[0][similarity_scores.argsort()[0][::-1][:top_k]] * 100
+    similarity_score = similarity_scores[0][similarity_scores.argsort()[0][::-1][:top_k]][0] * 100
 
     if similarity_score < 60.0:
         unknown_message = [
@@ -95,18 +95,13 @@ for message in st.session_state.messages:
 
 prompt = st.chat_input('Ask away!')
 
-suggest_topic_loop = None
-
 if prompt is not None:
     last_query = prompt
 
     with st.chat_message('user'):
         st.markdown(prompt)
-    
-    if suggest_topic_loop != None:
-        suggest_topic_loop.cancel()
 
-    suggest_topic_loop = async_loop.create_task(every(15, suggest_topic, chatdata_df, last_query))
+    async_loop.create_task(every(15, suggest_topic, chatdata_df, last_query))
 
     st.session_state.messages.append({'role': 'user', 'content': prompt})
 

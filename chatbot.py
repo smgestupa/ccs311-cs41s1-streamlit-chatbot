@@ -77,6 +77,8 @@ prompt = st.chat_input('Ask away!')
 
 suggest_topic_loop = None
 
+write_bot_message(get_most_similar_response(chatdata_df, "Help."))
+
 if prompt is not None:
     last_query = prompt
 

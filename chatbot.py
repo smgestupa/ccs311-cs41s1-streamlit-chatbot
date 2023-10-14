@@ -40,6 +40,19 @@ def get_most_similar_response(df, query, top_k=1, index=0):
     # Pick the Top k response
     sorted_indeces = similarity_scores.argsort()[0][::-1][:top_k]
 
+    # If the similarity score is less than 60%
+    similarity_score = similarity_scores[0][similarity_scores.argsort()[0][::-1][:top_k]] * 100
+
+    if similarity_score < 60.0:
+        unknown_message = [
+            'I don\'t understand your message, please try again.',
+            'I need more information about what you want to know. Keep going!',
+            'Hmmm... I may have limited information about your message, I am sorry.',
+            'I don\'t know what you want to say. Apologies.'
+        ]
+
+        return random.choice(unknown_message)
+
     # Fetch the corresponding response
     most_similar_responses = df.iloc[sorted_indeces]['Responses'].values
 

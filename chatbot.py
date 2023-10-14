@@ -55,7 +55,11 @@ topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-st
 
 chatdata_df = pd.read_csv(topics_responses)
 
-"""# Ask about the anime Bleach"""
+"""# Ask about BLEACH カテゴリー"""
+
+"""Bleach (stylized in all caps) is a Japanese anime television series based on Tite Kubo's original manga series of the same name. This chatbot is free for you to ask anything Bleach-related, whether you're a fan or not, I hope the chatbot will provide you with useful information."""
+
+"""Please feel free to try this and hope you enjoy! 😊"""
 
 last_query = ''
 
@@ -69,6 +73,9 @@ async_loop = asyncio.new_event_loop()
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+if len(st.session_state.messages) == 0:
+    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")})
+
 for message in st.session_state.messages:
     with st.chat_message(message['role']):
         st.markdown(message['content'])
@@ -76,8 +83,6 @@ for message in st.session_state.messages:
 prompt = st.chat_input('Ask away!')
 
 suggest_topic_loop = None
-
-write_bot_message(get_most_similar_response(chatdata_df, "Help."))
 
 if prompt is not None:
     last_query = prompt

@@ -11,7 +11,17 @@ st.set_page_config(
     page_icon="💬"
 )
 
-st.sidebar.success("Retreat and you will age. Hesitate and you will die.")
+random_quotes = [
+    "Change is inevitable. Instead of resisting it, you're better served simply going with the flow.",
+    "Revenge is just the path you took to escape your suffering.",
+    "Arrogance destroys the footholds of victory.",
+    "Even if no one believes in you, stick out your chest and scream your defiance!",
+    "Do not live bowing down. You must die standing up.",
+    "A bond is like a pointillist painting. In order to see it in its entirety, you have to take a step back.",
+    "If a miracle only happens once, then what is it called the second time?",
+    "Cast off your fear. Look forward. Go forward. Never stand still. Retreat and you will age. Hesitate and you will die."]
+
+st.sidebar.success(random.choice(random_quotes))
 
 async def every(__seconds: float, func, *args, **kwargs):
     while True:

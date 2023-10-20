@@ -11,6 +11,8 @@ st.set_page_config(
     page_icon="💬"
 )
 
+st.sidebar.success("Retreat and you will age. Hesitate and you will die.")
+
 def write_bot_message(response):
     with st.chat_message('assistant'):
         message_placeholder = st.empty()

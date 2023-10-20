@@ -6,6 +6,28 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+st.set_page_config(
+    page_title="Ask about BLEACH カテゴリー",
+    page_icon="💬"
+)
+
+random_quotes = [
+    "Change is inevitable. Instead of resisting it, you're better served simply going with the flow.",
+    "Revenge is just the path you took to escape your suffering.",
+    "Arrogance destroys the footholds of victory.",
+    "Even if no one believes in you, stick out your chest and scream your defiance!",
+    "Do not live bowing down. You must die standing up.",
+    "A bond is like a pointillist painting. In order to see it in its entirety, you have to take a step back.",
+    "If a miracle only happens once, then what is it called the second time?",
+    "Cast off your fear. Look forward. Go forward. Never stand still. Retreat and you will age. Hesitate and you will die."]
+
+st.sidebar.success(random.choice(random_quotes))
+
+async def every(__seconds: float, func, *args, **kwargs):
+    while True:
+        await asyncio.sleep(__seconds)
+        func(*args, **kwargs)
+
 def write_bot_message(response):
     with st.chat_message('assistant'):
         message_placeholder = st.empty()
@@ -57,19 +79,21 @@ def suggest_topic(df, query):
     if similarity_score >= 50.0:
         write_bot_message(f'Did you know? {response}')
 
-def get_unknown_message():
-    unknown_message = [
+def get_fallback_message():
+    fallback_message = [
             'I don\'t understand your message, please try again.',
             'I need more information about what you want to know. Keep going!',
             'Hmmm... I may have limited information about your message, I am sorry.',
             'I don\'t know what you want to say. Apologies.'
         ]
 
-    return random.choice(unknown_message)
+    return random.choice(fallback_message)
 
 topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
 
 chatdata_df = pd.read_csv(topics_responses)
+
+async_loop = asyncio.new_event_loop()
 
 """# Ask about BLEACH カテゴリー"""
 
@@ -77,20 +101,13 @@ chatdata_df = pd.read_csv(topics_responses)
 
 """Please feel free to try this and hope you enjoy! 😊"""
 
-last_query = ''
-
-async def every(__seconds: float, func, *args, **kwargs):
-    while True:
-        await asyncio.sleep(__seconds)
-        func(*args, **kwargs)
-
-async_loop = asyncio.new_event_loop()
-
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if len(st.session_state.messages) == 0:
     st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
+
+last_query = ''
 
 for message in st.session_state.messages:
     with st.chat_message(message['role']):
@@ -113,6 +130,6 @@ if prompt is not None:
     if similarity_score >= 50.0:
         write_bot_message(response)
     else:
-        write_bot_message(get_unknown_message())
+        write_bot_message(get_fallback_message())
 
 async_loop.run_forever()

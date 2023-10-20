@@ -13,18 +13,6 @@ st.set_page_config(
 
 st.sidebar.success("Retreat and you will age. Hesitate and you will die.")
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if len(st.session_state.messages) == 0:
-    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
-
-topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
-
-chatdata_df = pd.read_csv(topics_responses)
-
-async_loop = asyncio.new_event_loop()
-
 async def every(__seconds: float, func, *args, **kwargs):
     while True:
         await asyncio.sleep(__seconds)
@@ -90,6 +78,18 @@ def get_fallback_message():
         ]
 
     return random.choice(fallback_message)
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+if len(st.session_state.messages) == 0:
+    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
+
+topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
+
+chatdata_df = pd.read_csv(topics_responses)
+
+async_loop = asyncio.new_event_loop()
 
 """# Ask about BLEACH カテゴリー"""
 

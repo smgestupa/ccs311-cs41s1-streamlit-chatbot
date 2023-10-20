@@ -13,6 +13,23 @@ st.set_page_config(
 
 st.sidebar.success("Retreat and you will age. Hesitate and you will die.")
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+if len(st.session_state.messages) == 0:
+    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
+
+topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
+
+chatdata_df = pd.read_csv(topics_responses)
+
+async_loop = asyncio.new_event_loop()
+
+async def every(__seconds: float, func, *args, **kwargs):
+    while True:
+        await asyncio.sleep(__seconds)
+        func(*args, **kwargs)
+
 def write_bot_message(response):
     with st.chat_message('assistant'):
         message_placeholder = st.empty()
@@ -74,10 +91,6 @@ def get_fallback_message():
 
     return random.choice(fallback_message)
 
-topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
-
-chatdata_df = pd.read_csv(topics_responses)
-
 """# Ask about BLEACH カテゴリー"""
 
 """Bleach (stylized in all caps) is a Japanese anime television series based on Tite Kubo's original manga series of the same name. This chatbot is free for you to ask anything Bleach-related, whether you're a fan or not, I hope the chatbot will provide you with useful information."""
@@ -85,19 +98,6 @@ chatdata_df = pd.read_csv(topics_responses)
 """Please feel free to try this and hope you enjoy! 😊"""
 
 last_query = ''
-
-async def every(__seconds: float, func, *args, **kwargs):
-    while True:
-        await asyncio.sleep(__seconds)
-        func(*args, **kwargs)
-
-async_loop = asyncio.new_event_loop()
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if len(st.session_state.messages) == 0:
-    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
 
 for message in st.session_state.messages:
     with st.chat_message(message['role']):

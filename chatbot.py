@@ -57,15 +57,15 @@ def suggest_topic(df, query):
     if similarity_score >= 50.0:
         write_bot_message(f'Did you know? {response}')
 
-def get_unknown_message():
-    unknown_message = [
+def get_fallback_message():
+    fallback_message = [
             'I don\'t understand your message, please try again.',
             'I need more information about what you want to know. Keep going!',
             'Hmmm... I may have limited information about your message, I am sorry.',
             'I don\'t know what you want to say. Apologies.'
         ]
 
-    return random.choice(unknown_message)
+    return random.choice(fallback_message)
 
 topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
 
@@ -113,6 +113,6 @@ if prompt is not None:
     if similarity_score >= 50.0:
         write_bot_message(response)
     else:
-        write_bot_message(get_unknown_message())
+        write_bot_message(get_fallback_message())
 
 async_loop.run_forever()

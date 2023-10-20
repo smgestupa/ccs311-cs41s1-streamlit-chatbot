@@ -6,6 +6,11 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+st.set_page_config(
+    page_title="Ask about BLEACH カテゴリー",
+    page_icon="💬"
+)
+
 def write_bot_message(response):
     with st.chat_message('assistant'):
         message_placeholder = st.empty()

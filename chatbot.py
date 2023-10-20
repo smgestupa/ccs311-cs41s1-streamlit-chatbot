@@ -79,12 +79,6 @@ def get_fallback_message():
 
     return random.choice(fallback_message)
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if len(st.session_state.messages) == 0:
-    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
-
 topics_responses = 'https://raw.githubusercontent.com/smgestupa/ccs311-cs41s1-streamlit-chatbot/main/content/NLP-Chatbot-Data.csv'
 
 chatdata_df = pd.read_csv(topics_responses)
@@ -96,6 +90,12 @@ async_loop = asyncio.new_event_loop()
 """Bleach (stylized in all caps) is a Japanese anime television series based on Tite Kubo's original manga series of the same name. This chatbot is free for you to ask anything Bleach-related, whether you're a fan or not, I hope the chatbot will provide you with useful information."""
 
 """Please feel free to try this and hope you enjoy! 😊"""
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+if len(st.session_state.messages) == 0:
+    st.session_state.messages.append({'role': 'assistant', 'content': get_most_similar_response(chatdata_df, "Help.")[0]})
 
 last_query = ''
 

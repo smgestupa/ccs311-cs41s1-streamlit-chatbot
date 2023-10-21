@@ -1,2 +1,5 @@
 scikit-learn
 asyncio
+wordcloud
+matplotlib
+spacy
